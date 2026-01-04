@@ -1,0 +1,20 @@
+package com.emi.spring_init.spring_wiring;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.emi.service.AccountService;
+
+
+public class App 
+{
+    public static void main( String[] args )
+    {
+        ApplicationContext ctx=new ClassPathXmlApplicationContext("bean.xml");
+        
+        AccountService acc=(AccountService) ctx.getBean("service");
+        
+        System.out.println(acc.creditService(1000));
+        
+        
+    }
+}

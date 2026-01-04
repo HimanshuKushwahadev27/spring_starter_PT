@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+      <bean id="service" class="com.emi.service.AccountServiceImpl">
+      <!-- injecting the bean of AccountRepository in AccountService via Dynamicmethoddispatch
+          that mean making the object of the class by using the interace as an reference 
+          though it is done by IoC   wiring--> 
+        <property name="rep" ref="repository"></property>
+      </bean>
+      <bean id="repository" class="com.emi.rep.AccountRepository"></bean>
+</beans>
+
