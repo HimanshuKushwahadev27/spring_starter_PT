@@ -40,21 +40,28 @@ public class UserPrincipal implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return user.getFirstName();
+		return user.getEmail();
 	}
 	
+	@Override
 	public boolean isAccountNonLocked() {
-		return user.isAccountNonLocked();
-	}
-	
-	public boolean isCredentialsNonExpired() {
-		return user.getPasswrodExpiryDate() == null ||
-				user.getPasswrodExpiryDate().isAfter(LocalDateTime.now());
-	}
-	
-	public  boolean isEnabled() {
-		return user.isEnabled();
+	    return user.isAccountNonLocked();
 	}
 
+	@Override
+	public boolean isCredentialsNonExpired() {
+	    return user.getPasswrodExpiryDate() == null ||
+	           user.getPasswrodExpiryDate().isAfter(LocalDateTime.now());
+	}
+
+	@Override
+	public boolean isEnabled() {
+	    return user.isEnabled();
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+	    return true;
+	}
 
 }

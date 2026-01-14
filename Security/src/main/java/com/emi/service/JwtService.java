@@ -37,7 +37,7 @@ public class JwtService {
 	}
 	
 	
-	//al claims from the token parsed
+	//all claims from the token parsed
 	public Claims getAllClaims(String jwt) {
 		return 	Jwts.parser()
 				.verifyWith(signInKey())
@@ -72,7 +72,7 @@ public class JwtService {
 				.claims(extraClaims)
 				.subject(userdetais.getUsername())
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis()+ 1000*60*24))
+				.expiration(new Date(System.currentTimeMillis() + properties.getExpiration()))
 				.signWith(signInKey())
 				.compact();
 	}

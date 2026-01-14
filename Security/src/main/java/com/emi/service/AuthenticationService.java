@@ -33,6 +33,8 @@ public class AuthenticationService {
 				user.setEmail(request.getEmail());
 				user.setPassword(passwordEncoder.encode(request.getPassword()));
 				user.setRole(Role.USER);
+				user.setAccountNonLocked(true);
+				user.setEnabled(true);
 				
 		repository.save(user);
 		var jwtToken=jwtService.generateToken(user);

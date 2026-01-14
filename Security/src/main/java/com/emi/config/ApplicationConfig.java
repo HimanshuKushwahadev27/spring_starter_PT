@@ -27,11 +27,10 @@ public class ApplicationConfig {
 	
 	@Bean
     UserDetailsService userDetailsService() {
-		   return email -> {
-		        User user = repository.findByEmail(email)
-		            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-		        return new UserPrincipal(user);
-		    };
+	    return username -> new UserPrincipal(
+	            repository.findByEmail(username)
+	                .orElseThrow(() -> new UsernameNotFoundException("user not found"))
+	        );
 	}
     
     @Bean
