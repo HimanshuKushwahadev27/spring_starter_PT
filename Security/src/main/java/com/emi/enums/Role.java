@@ -1,4 +1,4 @@
-package som.emi.enums;
+package com.emi.enums;
 
 public enum Role {
 	

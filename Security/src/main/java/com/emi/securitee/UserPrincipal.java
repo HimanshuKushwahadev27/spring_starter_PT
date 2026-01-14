@@ -1,6 +1,5 @@
 package com.emi.securitee;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -12,12 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.emi.entity.User;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Data
-public class UserPrincipal implements UserDetails{
+
+public class UserPrincipal implements UserDetails {
 	
 	/**
 	 * 
@@ -42,7 +40,7 @@ public class UserPrincipal implements UserDetails{
 
 	@Override
 	public String getUsername() {
-		return user.getFirsName();
+		return user.getFirstName();
 	}
 	
 	public boolean isAccountNonLocked() {
