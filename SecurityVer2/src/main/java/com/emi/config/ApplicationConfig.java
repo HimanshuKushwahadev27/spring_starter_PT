@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.emi.Security.UserPrinciple;
 import com.emi.repo.UserRepo;
-import com.emi.securitee.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,32 +20,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-
-	private final UserRepo repository;
+	private final UserRepo repositories;
 	
 	@Bean
-    UserDetailsService userDetailsService() {
-	    return username -> new UserPrincipal(
-	            repository.findByEmail(username)
-	                .orElseThrow(() -> new UsernameNotFoundException("user not found"))
-	        );
-	}
-    
-    @Bean
-    AuthenticationProvider authenticationProvider() {
-    	DaoAuthenticationProvider authProvider=new DaoAuthenticationProvider(userDetailsService());
-    	authProvider.setPasswordEncoder(passwordEncoder());
-    	return authProvider;
-    }
-    
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
-    	return config.getAuthenticationManager();
-    }
-
-    @Bean
-	 PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+	UserDetailsService userDetailService() {
+		return username -> new UserPrinciple (
+				repositories.findByEmail(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User is not in the system")));
 	}
 	
+	@Bean
+	AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider auth=new DaoAuthenticationProvider(userDetailService());
+		auth.setPasswordEncoder(passwordEncoder());
+		return auth;
+	}
+	
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
+		return config.getAuthenticationManager();
+	}
+
+	@Bean
+    PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }
