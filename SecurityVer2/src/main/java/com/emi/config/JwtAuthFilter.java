@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.emi.repo.TokenRepo;
 import com.emi.services.JwtServices;
 
 import jakarta.servlet.FilterChain;
@@ -23,7 +24,8 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 
 	private final JwtServices jwtService;
 	private final UserDetailsService userDetailsService;
-   	
+   	private final TokenRepo tokenRepo;
+	
 	protected void doFilterInternal(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -46,7 +48,11 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 			//getting information of the user from database if available 
 			UserDetails userDetails=this.userDetailsService.loadUserByUsername(userEmail);
 			
-			if(jwtService.isTokenValid(jwt, userDetails)) {
+			var tokenValid=tokenRepo.findByToken(jwt)
+					.map(t -> !t.isExpired() && !t.isRevoked())
+					.orElse(false);
+			
+			if(jwtService.isTokenValid(jwt, userDetails) && tokenValid) {
 				
 				//creating authenticated user identity
 				UsernamePasswordAuthenticationToken auth=new UsernamePasswordAuthenticationToken(

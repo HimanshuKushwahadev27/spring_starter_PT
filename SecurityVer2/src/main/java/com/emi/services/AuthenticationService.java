@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 import com.emi.RequestDto.AuthRequest;
 import com.emi.RequestDto.RegisterRequest;
 import com.emi.ResponseDto.AuthenticateResponse;
+import com.emi.entity.Token;
 import com.emi.entity.User;
 import com.emi.enums.Role;
+import com.emi.enums.TokenType;
+import com.emi.repo.TokenRepo;
 import com.emi.repo.UserRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
+	private final TokenRepo tokenRepo;
 	private final UserRepo repository;
 	private final PasswordEncoder passwordEncoder;
 	
@@ -36,11 +40,35 @@ public class AuthenticationService {
 		  user.setPassword(passwordEncoder.encode(request.getPassword()));
 		  user.setRole(Role.USER);
 		  
-	 repository.save(user);
+	 var savedUser=repository.save(user);
 	 var jwtToken=jwtService.generateToken(user);
+	 saveUserToken(savedUser ,jwtToken);
 	 return AuthenticateResponse.builder()
 			 .token(jwtToken)
 			 .build();
+	}
+	
+	
+	public void saveUserToken(User user , String jwtToken) {
+	 var token=Token.builder()
+			 .user(user)
+			 .token(jwtToken)
+			 .type(TokenType.BEARER)
+			 .revoked(false)
+			 .expired(false)
+			 .build();
+	 tokenRepo.save(token);
+	}
+	
+	private void revokeAllUserToken(User user) {
+		var validToken=tokenRepo.findAllValidTokenByUser(user.getUser_Id());
+		if(validToken==null) {
+			return;
+		}
+		validToken.forEach(t ->{
+		  t.setExpired(true);
+		  t.setRevoked(true);
+		});
 	}
 	
 	public AuthenticateResponse Authenticate(AuthRequest request) {
@@ -49,7 +77,9 @@ public class AuthenticationService {
 		var user=repository.findByEmail(request.getEmail())
 				 .orElseThrow(() -> new UsernameNotFoundException("user is not here"));
 		
+		revokeAllUserToken( user);
 		var jwtToken=jwtService.generateToken(user);
+		saveUserToken(user,jwtToken);
 		return AuthenticateResponse.builder()
 				.token(jwtToken)
 				.build();

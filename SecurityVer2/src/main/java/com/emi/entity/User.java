@@ -1,6 +1,7 @@
 package com.emi.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.emi.enums.Role;
 
@@ -8,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,4 +43,6 @@ public class User {
 	private LocalDateTime passwordExpireDate;
 	
 
+	@OneToMany(mappedBy="user")
+	private List<Token> token;
 }
