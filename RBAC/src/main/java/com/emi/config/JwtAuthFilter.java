@@ -1,13 +1,14 @@
 package com.emi.config;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthFilter extends OncePerRequestFilter{
 
 	private final JwtService jwtService;
-	private final UserDetailsService userDetailsService;
 
 	
 	@Override
@@ -34,7 +34,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 			FilterChain filterChain)
 			throws ServletException, IOException {
 		
-		final String auth=request.getHeader("Authentication");
+		final String auth=request.getHeader("Authorization");
 		final String jwt;
 		
 		if(auth==null || !auth.startsWith("Bearer ")) {
@@ -46,7 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		String userName=jwtService.getUserName(jwt);
 		List<String> roles=jwtService.extractRole(jwt);
 		
-		List<SimpleGrantedAuthority> authorities= roles.stream().map(SimpleGrantedAuthority::new).toList();
+		Collection<? extends GrantedAuthority> authorities= roles.stream().map(SimpleGrantedAuthority::new).toList();
 		
 		if(userName!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
 			

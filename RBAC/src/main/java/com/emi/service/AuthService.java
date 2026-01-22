@@ -23,15 +23,16 @@ public class AuthService {
 	private final JwtService jwtService;
 	private final PasswordEncoder passwordEncoder;
 	
-	@PreAuthorize("hasRole('USER')")
 	public AuthResponse authenticateUser(LoginDto request) {
+			var user=userRepo.findByEmail
+							(request.getEmail()).
+							orElseThrow(() -> new UsernameNotFoundException("user is not here"));
+			
 
-
+			
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
 		
-		var user=userRepo.findByEmail
-				(request.getEmail()).
-				orElseThrow(() -> new UsernameNotFoundException("user is not here"));
+
 		
 		var jwtToken=jwtService.generateToken(user);
 		return AuthResponse.builder()
@@ -39,8 +40,9 @@ public class AuthService {
 				.build();
 	}
 	
-	@PreAuthorize("hasRole('USER')")
 	public void registerUser(RequestDto request) {
+		
+		System.out.println("in register");
 		
 		var user=new User();
 				user.setFirstName(request.getFirstName());

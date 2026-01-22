@@ -1,5 +1,6 @@
 package com.emi.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,19 +14,25 @@ import com.emi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/store")
+@RequestMapping("/api/v1/auth/")
 @RequiredArgsConstructor
 public class Demo {
 
 	private final AuthService authService;
 	
-	@PostMapping("/register")
+	@PostMapping(value="/register",
+			produces=MediaType.APPLICATION_JSON_VALUE,
+			consumes=MediaType.APPLICATION_JSON_VALUE
+			)
 	public void register(@RequestBody RequestDto req) {
 		 authService.registerUser(req);
 	}
 	
-	@PostMapping("/login")
-	public AuthResponse login(LoginDto log) {
+	@PostMapping(value="/login",
+			produces=MediaType.APPLICATION_JSON_VALUE,
+			consumes=MediaType.APPLICATION_JSON_VALUE
+			)
+	public AuthResponse login(@RequestBody LoginDto log) {
 		return authService.authenticateUser(log);
 	}
 }

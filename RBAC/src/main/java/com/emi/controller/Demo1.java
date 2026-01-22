@@ -1,6 +1,7 @@
 package com.emi.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,7 @@ public class Demo1 {
 
 	private final AuthService authService;
 
-	@PostMapping("/admin")
+	@GetMapping("/admin")
 	public ResponseEntity<?> helloAdmin(){
 		if(authService.onlyAdmin()) {
 		return ResponseEntity.ok("helloAdmin");
@@ -25,7 +26,7 @@ public class Demo1 {
 		}
 	}
 	
-	@PostMapping("/user")
+	@GetMapping("/user")
 	public ResponseEntity<?> helloUser(){
 		if(authService.onlyUser()) {
 		return ResponseEntity.ok("helloUser");

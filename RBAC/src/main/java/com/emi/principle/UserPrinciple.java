@@ -29,8 +29,8 @@ public class UserPrinciple implements UserDetails {
 	            .toList();
 	}
 	@Override
-	public @Nullable String getPassword() {
-		return null;
+	public  String getPassword() {
+		return user.getPassword();
 	}
 
 	@Override

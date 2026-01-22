@@ -92,11 +92,20 @@ public class JwtService {
 		return extractClaims(jwt , Claims::getExpiration);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<String> extractRole(String jwt) {
-		return extractClaims(
-				jwt,
-				claims -> claims.get("role" , List.class));
+		Claims claim=getAllClaims(jwt);
+		
+		Object roleObj=claim.get("roles");
+		
+		if(roleObj instanceof  List<?>) {
+			return ((List<?>) roleObj)
+					.stream()
+					.map(Object::toString)
+					.toList()
+					;
+		}
+		
+		return List.of();
 	}
 			
 }
